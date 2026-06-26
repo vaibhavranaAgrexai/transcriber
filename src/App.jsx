@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 
 const PROVIDERS = {
   groq: {
@@ -59,8 +59,8 @@ function fmtBytes(b) {
 }
 
 export default function App() {
-  const [provider, setProvider] = useState("groq");
-  const [apiKey, setApiKey] = useState("");
+  const [provider, setProvider] = useState(() => localStorage.getItem("transcriber_provider") || "groq");
+  const [apiKey, setApiKey] = useState(() => localStorage.getItem("transcriber_apiKey") || "");
   const [mode, setMode] = useState("screen");
   const [phase, setPhase] = useState("setup");
   const [secs, setSecs] = useState(0);
@@ -72,6 +72,9 @@ export default function App() {
   const [copied, setCopied] = useState(false);
   const [showKey, setShowKey] = useState(false);
   const [processingMsg, setProcessingMsg] = useState("Sending to Whisper\u2026");
+
+  useEffect(() => { localStorage.setItem("transcriber_provider", provider); }, [provider]);
+  useEffect(() => { localStorage.setItem("transcriber_apiKey", apiKey); }, [apiKey]);
 
   const recRef = useRef(null);
   const chunksRef = useRef([]);
